@@ -1068,6 +1068,7 @@
 		<row><td>ISSelfRegisterCosting</td><td>1</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterCosting</td><td/><td/></row>
 		<row><td>ISSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFiles</td><td/><td/></row>
 		<row><td>ISSelfRegisterFinalize</td><td>1</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFinalize</td><td/><td/></row>
+		<row><td>ISSetAllUsers</td><td>257</td><td>SetAllUsers.dll</td><td>SetAllUsers</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISUnSelfRegisterFiles</td><td/><td/></row>
 		<row><td>SetARPINSTALLLOCATION</td><td>51</td><td>ARPINSTALLLOCATION</td><td>[INSTALLDIR]</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%SystemRoot]\Profiles\All Users</td><td/><td/></row>
@@ -2620,7 +2621,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1049</td><td>Название организации</td><td>0</td><td/><td>1017546922</td></row>
+		<row><td>COMPANY_NAME</td><td>1049</td><td>Название организации</td><td>0</td><td/><td>489057353</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1049</td><td>Всегда устанавливать</td><td>0</td><td/><td>1017546922</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1049</td><td>Настройки цвета системы не подходят для работы [ProductName].</td><td>0</td><td/><td>1017546922</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_OS</td><td>1049</td><td>Операционная система не подходит для работы [ProductName].</td><td>0</td><td/><td>1017546922</td></row>
@@ -3720,8 +3721,8 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>1049</td><td>Процессор не подходит для работы [ProductName].</td><td>0</td><td/><td>1017546922</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1049</td><td>Объем памяти ОЗУ не достаточен для работы [ProductName].</td><td>0</td><td/><td>1017546922</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1049</td><td>Разрешение экрана не подходит для работы [ProductName].</td><td>0</td><td/><td>1017546922</td></row>
-		<row><td>ID_STRING1</td><td>1049</td><td>http://www.УниверситетИннополис.com</td><td>0</td><td/><td>1017546922</td></row>
-		<row><td>ID_STRING2</td><td>1049</td><td>Университет Иннополис</td><td>0</td><td/><td>1017546922</td></row>
+		<row><td>ID_STRING1</td><td>1049</td><td>http://www.Названиеорганизации.com</td><td>0</td><td/><td>489057353</td></row>
+		<row><td>ID_STRING2</td><td>1049</td><td>Название организации</td><td>0</td><td/><td>489057353</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1049</td><td>Данный компонент не будет удален.</td><td>0</td><td/><td>1017546922</td></row>
 	</table>
 
@@ -3881,6 +3882,7 @@
 		<row><td>ISSelfRegisterCosting</td><td/><td>2201</td><td/><td/></row>
 		<row><td>ISSelfRegisterFiles</td><td/><td>5601</td><td/><td/></row>
 		<row><td>ISSelfRegisterFinalize</td><td/><td>6601</td><td/><td/></row>
+		<row><td>ISSetAllUsers</td><td>Not Installed</td><td>10</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td/><td>2202</td><td/><td/></row>
 		<row><td>InstallFiles</td><td/><td>4000</td><td>InstallFiles</td><td/></row>
 		<row><td>InstallFinalize</td><td/><td>6600</td><td>InstallFinalize</td><td/></row>
@@ -3968,7 +3970,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{37556B08-E14D-439F-BEA6-6D5BFB95FFEC}</td></row>
 		<row><td>ISUSSignature</td><td>{C960E114-B7B8-4B7E-8479-65E7F8442A07}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewAppFiles,viewISToday,viewLearnMore,viewProject</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewAppFiles,viewISToday,viewLearnMore,viewProject,viewUpdateService,viewUpgradePaths,viewRelease</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -3998,6 +4000,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>FileCost</td><td/><td>900</td><td>FileCost</td><td/></row>
 		<row><td>FindRelatedProducts</td><td/><td>430</td><td>FindRelatedProducts</td><td/></row>
 		<row><td>ISPreventDowngrade</td><td>ISFOUNDNEWERPRODUCTVERSION</td><td>450</td><td>ISPreventDowngrade</td><td/></row>
+		<row><td>ISSetAllUsers</td><td>Not Installed</td><td>10</td><td/><td/></row>
 		<row><td>InstallWelcome</td><td>Not Installed</td><td>1210</td><td>InstallWelcome</td><td/></row>
 		<row><td>IsolateComponents</td><td/><td>950</td><td>IsolateComponents</td><td/></row>
 		<row><td>LaunchConditions</td><td>Not Installed</td><td>410</td><td>LaunchConditions</td><td/></row>

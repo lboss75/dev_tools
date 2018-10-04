@@ -13,6 +13,7 @@ namespace ea2dita.lib
     {
         private Dictionary<Type, List<Func<object, IEnumerable>>> children_func = new Dictionary<Type, List<Func<object, IEnumerable>>>();
         private Dictionary<Type, ExportTopicConfig> topics = new Dictionary<Type, ExportTopicConfig>();
+        private Dictionary<Type, Func<object, bool>> is_simple_func = new Dictionary<Type, Func<object, bool>>();
         private Random rnd = new Random();
 
         public ExportConfig()
@@ -20,6 +21,17 @@ namespace ea2dita.lib
             this.AddChildren<Package>(x => x.Elements);
             this.AddChildren<Package>(x => x.Packages);
             this.AddChildren<Element>(x => x.Elements.Cast<Element>().Where(y => y.Type != "Boundary"));
+
+            this.AddSimple<Element>(
+                x =>
+                   x.Diagrams.IsEmpty()
+                && x.Attributes.IsEmpty()
+                && x.Methods.IsEmpty()
+                && FilterConnectors(x.Connectors).IsEmpty()
+                && x.Elements.IsEmpty()
+                && x.Scenarios.IsEmpty()
+                && x.Requirements.IsEmpty()
+                && x.Issues.IsEmpty());
 
             this.AddTopic<Package>(
                 id: x => "pkg" + x.ParentID,
@@ -29,6 +41,14 @@ namespace ea2dita.lib
                 diagrams: x => x.Diagrams,
                 folder_name: x => Translit(FirstNotEmpty(x.Alias, x.Name)),
                 config: cfg => {
+                    cfg.AddTable<Element>(x=>x.Elements, "Элементы", columns =>
+                        {
+                            columns.Add("Alias", x => x.Alias);
+                            columns.Add("Имя", x => x.Name);
+                            columns.Add("Тип", x => x.Type);
+                            columns.Add("Статус", x => x.Status);
+                            columns.Add("Примечания", x => x.Notes, Is_Html: true);
+                        });
 
                 }
             );
@@ -36,16 +56,19 @@ namespace ea2dita.lib
             this.AddTopic<Element>(
                 id: x => "eae" + x.ElementID,
                 name: x => x.Name,
-                title: x => FirstNotEmpty(x.Name, x.Alias, x.ElementID) + "(" + x.Type + ")",
+                title: x => FirstNotEmpty(
+                                string.IsNullOrWhiteSpace(x.Alias) ? x.Name : $"{x.Alias}. {x.Name}",
+                                x.Alias,
+                                x.ElementID) + $"({x.Type})",
                 notes: x => x.Notes,
                 diagrams: x => x.Diagrams,
-                folder_name: x => Translit(FirstNotEmpty(x.Alias, x.Name, x.PackageID)),
+                folder_name: x => Translit(FirstNotEmpty(x.Alias, x.Name, x.ElementID)),
                 config: cfg =>
                 {
                     cfg.AddTable<Attribute>(x => x.Attributes, "Аттрибуты", columns =>
                     {
-                        columns.Add("Имя", x => x.Name);
-                        columns.Add("Тип", x => x.Type);
+                        columns.Add("Имя", x => FormAttributeName(x));
+                        columns.Add("Модификаторы", x => FormAttributeModificators(x));
                         columns.Add("Примечания", x => x.Notes, Is_Html: true);
                     });
 
@@ -53,6 +76,15 @@ namespace ea2dita.lib
                     {
                         columns.Add("Имя", x => x.Name);
                         columns.Add("Тип", x => BuildMethodType(x));
+                        columns.Add("Примечания", x => x.Notes, Is_Html: true);
+                    });
+
+                    cfg.AddTable<Element>(x => x.Elements, "Элементы", columns =>
+                    {
+                        columns.Add("Alias", x => x.Alias);
+                        columns.Add("Имя", x => x.Name);
+                        columns.Add("Тип", x => x.Type);
+                        columns.Add("Статус", x => x.Status);
                         columns.Add("Примечания", x => x.Notes, Is_Html: true);
                     });
 
@@ -109,6 +141,92 @@ namespace ea2dita.lib
                 });
         }
 
+        private void AddSimple<T>(Func<T, bool> filter_funct)
+        {
+            is_simple_func.Add(typeof(T), (x => filter_funct((T) x)));
+        }
+
+        private string FormAttributeModificators(Attribute attribute)
+        {
+            var sb = new StringBuilder();
+
+            if (attribute.IsCollection)
+            {
+                sb.Append("Collection");
+            }
+
+            if (attribute.IsStatic)
+            {
+                if (sb.Length != 0)
+                {
+                    sb.Append(',');
+                }
+
+                sb.Append("Static");
+            }
+
+            if (attribute.IsOrdered)
+            {
+                if (sb.Length != 0)
+                {
+                    sb.Append(',');
+                }
+
+                sb.Append("Ordered");
+            }
+
+            if (!string.IsNullOrWhiteSpace(attribute.Scale))
+            {
+                if (sb.Length != 0)
+                {
+                    sb.Append(',');
+                }
+
+                sb.Append("Scale");
+            }
+
+            return sb.ToString();
+        }
+
+        private string FormAttributeName(Attribute attribute)
+        {
+            var sb = new StringBuilder();
+
+            switch (attribute.Visibility)
+            {
+                case "Public":
+                    sb.Append('+');
+                    break;
+                case "Private":
+                    sb.Append('-');
+                    break;
+                case "Protected":
+                    sb.Append('#');
+                    break;
+            }
+
+            sb.Append(attribute.Name);
+            sb.Append(": ");
+            if (attribute.IsConst)
+            {
+                sb.Append("const ");
+            }
+            sb.Append(attribute.Type);
+
+            if (attribute.LowerBound != "1" || attribute.UpperBound != "1")
+            {
+                sb.Append($"[{attribute.LowerBound}..{attribute.UpperBound}]");
+            }
+
+            if (!string.IsNullOrWhiteSpace(attribute.Default))
+            {
+                sb.Append("=");
+                sb.Append(attribute.Default);
+            }
+
+            return sb.ToString();
+        }
+
         public ExportTopicConfig GetTopicConfig(object obj)
         {
             foreach (var topicConfig in topics)
@@ -125,6 +243,24 @@ namespace ea2dita.lib
             }
 
             return null;
+        }
+
+        public bool IsSimple(object obj)
+        {
+            foreach (var simpleConfig in is_simple_func)
+            {
+                try
+                {
+                    var inter = Marshal.GetComInterfaceForObject(obj, simpleConfig.Key);
+                    return simpleConfig.Value(obj);
+                }
+                catch (InvalidCastException)
+                {
+
+                }
+            }
+
+            return false;
         }
 
         public List<Func<object, IEnumerable>> GetChildrenConfig(object obj)

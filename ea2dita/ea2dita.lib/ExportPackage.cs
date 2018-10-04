@@ -150,10 +150,9 @@ namespace ea2dita.lib
                     {
                         foreach (var child in child_config(obj))
                         {
-                            if (this.options.HideEmptyElements && IsObjectEmpty(child))
+                            if (this.options.HideEmptyElements && IsObjectEmpty(child) || this.config.IsSimple(child))
                             {
                                 continue;
-
                             }
 
                             var child_topic_config = this.config.GetTopicConfig(child);
